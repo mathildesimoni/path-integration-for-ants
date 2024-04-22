@@ -22,7 +22,7 @@ function h(h_init::Real, delta_t::Real, n::Real, R::Real, I_t::Array, tau::Real)
     lower_diag = (delta_t/tau - 1) * ones(n)
     diag = ones(n+1)
     A = Bidiagonal(diag, lower_diag, :L)
-    b = vcat(h_init * ones(1), (delta_t * R / tau) * I_t[1:n])
+    b = vcat([h_init], (delta_t * R / tau) * I_t[1:n])
     return A\b
 end
 
@@ -31,7 +31,11 @@ function r(h::Real, alpha::Real=1.0, beta::Real=0.0, ro::Real=1.0)
 end
 
 # slow oscillating input for the poisson neurons
-function Input(t::Real, Io::Real, omega::Real)
+function I(t::Real, Io::Real, omega::Real)
     return Io * sin(omega * t)
 end
 
+# Theoretical instantaneous firing rate
+function r(t::Real, alpha::Real=1.0, beta::Real=0.0, ro::Real=1.0, Io::Real=1.0, omega::Real=1.0)
+    return ro * g(I(t, Io, omega), alpha, beta)
+end
