@@ -75,7 +75,6 @@ plot(bin_t, avg_population_spikes_per_ms, title="Population firing rate", lw=2, 
 plot!(bin_t, new_avg_population_spikes_per_ms, title="Population firing rate", lw=2, xlabel=L"t"*" (ms)", label=L"r_0= %$new_ro")
 plot!(theoretical_t, theoretical_r.(theoretical_t, alpha, beta, new_ro, Io, omega), lw=2, xlabel=L"t"* " (ms)", label="Theoretical", alpha=0.8)
 
-
 # decrease tau
 new_T = 50
 tau1 = 1
@@ -96,12 +95,3 @@ plot!(bin_t, avg_population_spikes_per_ms_tau1, lw=1, xlabel=L"t"*" (ms)", label
 plot!(bin_t, avg_population_spikes_per_ms_tau2, lw=1, xlabel=L"t"*" (ms)", label=L"\tau = %$(tau2)")
 plot!(theoretical_t, theoretical_r.(theoretical_t, alpha, beta, ro, Io, omega), lw=2, xlabel=L"t"* " (ms)", label="Theoretical", alpha=0.8)
 savefig("data/Q02_rate_vs_varying_tau.pdf")
-
-
-
-plot(t, I_t, label=L"Input \: Current", lw=2, xlabel=L"t \: (ms)", ylabel=L"I \: (nA)")
-plot(t, h_arr, label=L"Neuron \: Potential", lw=2, xlabel=L"t \: (ms)", ylabel=L"h \: (mV)")
-plot(t[1:n], r_arr, label=L"Spike \: probability", lw=2, xlabel=L"t \: (ms)")
-
-t = range(0, stop = T, length = Int64(n/bin_size))
-plot!(t, avg_population_spikes_per_ms, label="Population Rate", lw=2, xlabel=L"t"*" (ms)")
