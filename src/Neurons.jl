@@ -1,4 +1,3 @@
-
 module Neurons
     
     using LinearAlgebra
@@ -41,7 +40,7 @@ module Neurons
     end
 
     # Theoretical instantaneous firing rate
-    function theoretical_r(t::Real, alpha::Real=1.0, beta::Real=0.0, ro::Real=1.0, Io::Real=1.0, omega::Real=1.0)
+    function theoretical_r(t::Real, alpha::Real=1.0, beta::Real=0.0, ro::Real=1.0, Io::Real=1.0, omega::Real=10.0)
         return ro * g(I(t, Io, omega), alpha, beta)
     end
 
@@ -53,7 +52,7 @@ module Neurons
                 T::Real=1000, 
                 R::Real=1, 
                 Io::Real=2.0, 
-                omega::Real=1, 
+                omega::Real=10, 
                 alpha::Real=2, 
                 beta::Real=0.5, 
                 tau::Real=10, 
@@ -77,9 +76,9 @@ module Neurons
                 N::Int=100,
                 n::Int=1000)
         bin_size = Int64(ceil(bin_length/delta_t)) # number of timesteps in a bin
-        nb_spikes_per_ms = sum(reshape(spikes, Int64(ceil(n/bin_size)), bin_size, N), dims = 2) ./ bin_length
+        nb_spikes_per_ms = sum(reshape(spikes, bin_size, Int64(ceil(n/bin_size)), N), dims = 1) ./ bin_length
         avg_population_spikes_per_ms = sum(nb_spikes_per_ms, dims=3) / N
-        avg_population_spikes_per_ms = avg_population_spikes_per_ms[:,1,:] # remove the second dimension
+        avg_population_spikes_per_ms = avg_population_spikes_per_ms[1,:,:] # remove the second dimension
         return avg_population_spikes_per_ms
     end
 

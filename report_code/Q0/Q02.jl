@@ -17,7 +17,8 @@ tau = 10.0 # characteristic time in ms
 N = 100 # number of poisson neurons
 T = 1000 # simulation length in ms
 Io = 2.0 # parameter for the input function in nA
-omega = 1.0 # parameter for the input function in 1/ms
+omega = 10.0 # frequency in rad/s
+omega = omega/1000 # frequency in rad/ms
 h_init = 0.0 # initial potential in mV
 
 bin_length = 1 # in ms
@@ -36,7 +37,7 @@ bin_t = range(0, T, Int64(T/bin_length))
 plot(bin_t, avg_population_spikes_per_ms, title="Population firing rate", lw=1, xlabel=L"t"*" (ms)", label=L"N = %$(N)")
 plot!(bin_t, new_avg_population_spikes_per_ms, lw=1, xlabel=L"t"*" (ms)", label=L"N = %$(new_N)")
 theoretical_t = range(0, T, n+1)
-plot!(theoretical_t, theoretical_r.(theoretical_t, alpha, beta, ro, Io, omega), lw=1, xlabel=L"t"* " (ms)", label="Theoretical", alpha=0.2)
+plot!(theoretical_t, theoretical_r.(theoretical_t, alpha, beta, ro, Io, omega), lw=2, xlabel=L"t"* " (ms)", label="Theoretical", alpha=0.5)
 savefig("data/Q02_N$(N)_vs_N$(new_N)_rate_vs_theoretical_T$(T).pdf")
 
 # Zoom in 
