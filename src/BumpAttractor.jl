@@ -4,13 +4,13 @@ module BumpAttractor
     using Neurons
     
     # first collective variable
-    function m_cos(N::Int, x_i::Array, S_i::Array)
-        return 1/N * sum(cos.(x_i) .* S_i)
+    function m_cos(N::Int, x_i::Array, S_i::Array, phi::Real = 0.0)
+        return 1/N * sum(cos.(x_i .+ phi) .* S_i)
     end
 
     # second collective variable
-    function m_sin(N::Int, x_i::Array, S_i::Array)
-        return 1/N * sum(sin.(x_i) .* S_i)
+    function m_sin(N::Int, x_i::Array, S_i::Array, phi::Real = 0.0)
+        return 1/N * sum(sin.(x_i .+ phi) .* S_i)
     end
 
     # Input function
@@ -44,7 +44,8 @@ module BumpAttractor
                     J::Real,
                     alpha::Real, 
                     beta::Real, 
-                    ro::Real)
+                    ro::Real,
+                    phi::Real = 0.0)
         # initialization
         h_t = zeros(Float64, (n+1, N)) # TODO: no need to store the full matrix if we don't return it
         h_t[1, :] = h_init
@@ -56,8 +57,8 @@ module BumpAttractor
             t = i * delta_t # current time
 
             # calculate collective variables (only once per timestep)
-            m_cos_t = m_cos(N, x_i, S_i[i, :])
-            m_sin_t = m_sin(N, x_i, S_i[i, :])
+            m_cos_t = m_cos(N, x_i, S_i[i, :], phi)
+            m_sin_t = m_sin(N, x_i, S_i[i, :], phi)
 
             # calulate input to each neuron
             if !I_ext_bool # no external input
