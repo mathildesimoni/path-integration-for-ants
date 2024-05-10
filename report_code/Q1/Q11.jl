@@ -14,7 +14,7 @@ tau = 10.0 # characteristic time in ms
 alpha = 2.0 # parameter for the transfer function in 1/mV
 beta = 0.5 # parameter for the transfer function in mV
 ro = 1 # parameter for the mean firing rate function in 1/ms
-I_ext = false # no external input
+I_ext_bool = false # no external input
 
 # simulation parameters
 delta_t = 0.1 # timestep for the simulation in ms. MUST BE <= 1
@@ -27,14 +27,14 @@ nb_ticks_x = 5
 # tryout with a specific J
 J = 5
 filename = "data/Q11_J_" * string(J) * ".pdf"
-spikes = simulate_network(h_init, x_i, N, delta_t, n, R, tau, I_ext, J, alpha, beta, ro)
+spikes = simulate_network(h_init, x_i, N, delta_t, n, R, tau, I_ext_bool, J, alpha, beta, ro)
 heatmap(transpose(spikes), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "neuron location", c = :grayC, colorbar=false, right_margin = 5Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = N , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n/nb_ticks_x:n), Int.(0:T/nb_ticks_x:T)))
 
 # ranging J
 J_values = [0.1, 0.5, 1, 2, 3, 4, 5, 6, 10, 20, 50, 100]
 for J in J_values
     filename = "data/Q11_J_" * string(J) * ".pdf"
-    spikes = simulate_network(h_init, x_i, N, delta_t, n, R, tau, I_ext, J, alpha, beta, ro)
+    spikes = simulate_network(h_init, x_i, N, delta_t, n, R, tau, I_ext_bool, J, alpha, beta, ro)
     heatmap(transpose(spikes), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "neuron location", c = :grayC, colorbar=false, right_margin = 5Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = N , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n/nb_ticks_x:n), Int.(0:T/nb_ticks_x:T)))
     savefig(filename) 
 end

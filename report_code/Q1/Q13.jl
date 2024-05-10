@@ -14,7 +14,7 @@ tau = 10.0 # characteristic time in ms
 alpha = 2.0 # parameter for the transfer function in 1/mV
 beta = 0.5 # parameter for the transfer function in mV
 ro = 1 # parameter for the mean firing rate function in 1/ms
-I_ext = false # no external input
+I_ext_bool = false # no external input
 J = 5
 
 # simulation parameters
@@ -33,7 +33,7 @@ for N_test in N_values
     h_init_test = rand(Uniform(0,1), N_test)
 
     # simulate the network activity
-    spikes = simulate_network(h_init_test, x_i_test, N_test, delta_t, n, R, tau, I_ext, J, alpha, beta, ro)
+    spikes = simulate_network(h_init_test, x_i_test, N_test, delta_t, n, R, tau, I_ext_bool, J, alpha, beta, ro)
     heatmap(transpose(spikes), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "Neuron Location", c = :grayC, colorbar=false, right_margin = 3Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = N_test , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n/nb_ticks_x:n), Int.(0:T/nb_ticks_x:T)))
 
     # find the location of the bump at every timestep and average over small bins of time
@@ -55,7 +55,7 @@ tau_values = [1, 5, 10, 20, 30, 40]
 for tau_test in tau_values
 
     # simulate the network activity
-    spikes = simulate_network(h_init, x_i, N, delta_t, n, R, tau_test, I_ext, J, alpha, beta, ro)
+    spikes = simulate_network(h_init, x_i, N, delta_t, n, R, tau_test, I_ext_bool, J, alpha, beta, ro)
     heatmap(transpose(spikes), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "Neuron Location", c = :grayC, colorbar=false, right_margin = 3Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = N , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n/nb_ticks_x:n), Int.(0:T/nb_ticks_x:T)))
 
     # find the location of the bump at every timestep and average over small bins of time
@@ -79,7 +79,7 @@ for delta_t_test in delta_t_values
     n_test = Int64(T/delta_t_test)
 
     # simulate the network activity
-    spikes = simulate_network(h_init, x_i, N, delta_t_test, n_test, R, tau, I_ext, J, alpha, beta, ro)
+    spikes = simulate_network(h_init, x_i, N, delta_t_test, n_test, R, tau, I_ext_bool, J, alpha, beta, ro)
     heatmap(transpose(spikes), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "Neuron Location", c = :grayC, colorbar=false, right_margin = 3Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = N , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n_test/nb_ticks_x:n_test), Int.(0:T/nb_ticks_x:T)))
 
     # find the location of the bump at every timestep and average over small bins of time

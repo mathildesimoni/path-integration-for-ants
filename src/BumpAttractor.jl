@@ -1,6 +1,6 @@
 module BumpAttractor
 
-    export simulate_network, locate_bump, locate_bump_avg
+    export simulate_network, locate_bump, locate_bump_avg, I_ext
     using Neurons
     
     # first collective variable
@@ -19,8 +19,17 @@ module BumpAttractor
     end
 
     function I_ext(x::Real, t)
-        # TODO
-        return 0.0
+        if t < 300 || t >= 700
+            return 0.0
+        elseif t < 400
+            u_k = (2*pi)/3
+        elseif t < 600
+            return 0.0
+        else
+            u_k = (4*pi)/3
+        end
+        sigma = pi/8
+        return 1/(sqrt(2*pi)*sigma) * exp((-(x - u_k)^2 / (2*sigma^2)))
     end
 
     function simulate_network(
@@ -31,7 +40,7 @@ module BumpAttractor
                     n::Real,
                     R::Real,
                     tau::Real,
-                    I_ext::Bool, 
+                    I_ext_bool::Bool, 
                     J::Real,
                     alpha::Real, 
                     beta::Real, 
@@ -51,7 +60,7 @@ module BumpAttractor
             m_sin_t = m_sin(N, x_i, S_i[i, :])
 
             # calulate input to each neuron
-            if !I_ext # no external input
+            if !I_ext_bool # no external input
                 I_t = I.(J, x_i, m_cos_t, m_sin_t, 0.0)
             else
                 I_ext_t = I_ext.(x_i, t)

@@ -14,7 +14,6 @@ tau = 10.0 # characteristic time in ms
 alpha = 2.0 # parameter for the transfer function in 1/mV
 beta = 0.5 # parameter for the transfer function in mV
 ro = 1 # parameter for the mean firing rate function in 1/ms
-I_ext_bool = false # no external input
 J = 5
 
 # simulation parameters
@@ -25,21 +24,30 @@ n = Int64(T/delta_t)
 # plot parameters
 nb_ticks_x = 5
 
+# plot I_ext for different times
+t_values = [350, 500, 650]
+p1 = plot()
+plot!(xlabel=L"x_i", ylabel=L"I_{ext}")
+for t in t_values
+    I_ext_t = I_ext.(x_i, t)
+    plot!(x_i, I_ext_t, label="t=$t", lw=2)
+end
+plot(p1)
+savefig("data/Q14_I_ext.pdf")
+
+# now, simulate with external current!
+I_ext_bool = true
+
 # simulate the network activity
 spikes = simulate_network(h_init, x_i, N, delta_t, n, R, tau, I_ext_bool, J, alpha, beta, ro)
-heatmap(transpose(spikes), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "Neuron Location", c = :grayC, colorbar=false, right_margin = 3Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = N , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n/nb_ticks_x:n), Int.(0:T/nb_ticks_x:T)))
 
 # find the location of the bump at every timestep
 bump_location = locate_bump.(eachrow(spikes), Ref(x_i))
-heatmap(transpose(spikes), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "neuron location", c = :grayC, colorbar=false, right_margin = 3Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = N , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n/nb_ticks_x:n), Int.(0:T/nb_ticks_x:T)))
-scatter!(0:1:n, bump_location * (N/(2*pi)), mc=:red, ms=2, ma=0.2, label = "center of the bump")
-
 # average location of the bump over small bins of time (to have a clearer plot)
 bin_size = 10 # ms, as advised in the instructions
 bin_length = Int64(bin_size/delta_t)
 bump_location_bins = transpose(reshape(bump_location[1:n], bin_length, Int((n)/bin_length)))
-# NOT THIS (their reshape function is weird): bump_location_bins = reshape(bump_location[1:n], Int((n)/bin_length), bin_length)
 avg_bump_location = locate_bump_avg.(Ref(ones(bin_length)), eachrow(bump_location_bins)) # need to use a circular mean method again
 heatmap(transpose(spikes), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "Neuron Location", c = :grayC, colorbar=false, right_margin = 3Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = N , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n/nb_ticks_x:n), Int.(0:T/nb_ticks_x:T)))
 plot!(0:bin_length:n-1, avg_bump_location * (N/(2*pi)), label = "center of the bump")
-savefig("data/Q12.pdf")
+savefig("data/Q14.pdf")
