@@ -2,6 +2,7 @@ module BumpAttractor
 
     export simulate_network, locate_bump, locate_bump_avg, I_ext
     using Neurons
+    using Random, Distributions
     
     # first collective variable
     function m_cos(N::Int, x_i::Array, S_i::Array)
@@ -18,19 +19,16 @@ module BumpAttractor
         return J * (cos(x - phi) * m_cos + sin(x - phi) * m_sin) + I_ext
     end
 
-    function I_ext(x::Real, t)
-        if t < 300 || t >= 700
+    function I_ext(x::Real, t::Real)
+        # using cases, k is 1 if 300 < t < 600, 2 if 600 < t < 900, 3 if 900 < t < 1200
+        k = 300 <= t < 400 ? 1 :
+            600 <= t < 700 ? 2 :
             return 0.0
-        elseif t < 400
-            u_k = (2*pi)/3
-        elseif t < 600
-            return 0.0
-        else
-            u_k = (4*pi)/3
-        end
-        sigma = pi/8
-        return 1/(sqrt(2*pi)*sigma) * exp((-(x - u_k)^2 / (2*sigma^2)))
+        std = pi/8
+        mean = k == 1 ? 2*pi/3 : 4*pi/3 
+        return Normal(mean, std)(x)
     end
+
 
     function simulate_network(
                     h_init::Array,

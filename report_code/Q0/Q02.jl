@@ -38,7 +38,10 @@ plot(bin_t, avg_population_spikes_per_ms, title="Population firing rate", lw=1, 
 plot!(bin_t, new_avg_population_spikes_per_ms, lw=1, xlabel=L"t"*" (ms)", label=L"N = %$(new_N)")
 theoretical_t = range(0, T, n+1)
 plot!(theoretical_t, theoretical_r.(theoretical_t, alpha, beta, ro, Io, omega), lw=2, xlabel=L"t"* " (ms)", label="Theoretical", alpha=0.5)
-savefig("data/Q02_N$(N)_vs_N$(new_N)_rate_vs_theoretical_T$(T).pdf")
+
+# THIS IS THE ONLY FIGURE WE NEED 
+savefig("data/Q02_N$(N)_vs_N$(new_N)_rate_vs_theoretical_T$(T).pdf") 
+
 
 # Zoom in 
 new_T = 50
