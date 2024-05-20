@@ -4,18 +4,18 @@ module BumpAttractor
     using Neurons
     
     # first collective variable
-    function m_cos(N::Int, x_i::Array, S_i::Array, phi::Real = 0.0)
-        return 1/N * sum(cos.(x_i .+ phi) .* S_i)
+    function m_cos(N::Int, x_i::Array, S_i::Array)
+        return 1/N * sum(cos.(x_i) .* S_i)
     end
 
     # second collective variable
-    function m_sin(N::Int, x_i::Array, S_i::Array, phi::Real = 0.0)
-        return 1/N * sum(sin.(x_i .+ phi) .* S_i)
+    function m_sin(N::Int, x_i::Array, S_i::Array)
+        return 1/N * sum(sin.(x_i) .* S_i)
     end
 
     # Input function
-    function I(J::Real, x::Real, m_cos::Real, m_sin::Real, I_ext::Real)
-        return J * (cos(x) * m_cos + sin(x) * m_sin) + I_ext
+    function I(J::Real, x::Real, m_cos::Real, m_sin::Real, I_ext::Real, phi::Real = 0.0)
+        return J * (cos(x - phi) * m_cos + sin(x - phi) * m_sin) + I_ext
     end
 
     function I_ext(x::Real, t)
@@ -57,15 +57,15 @@ module BumpAttractor
             t = i * delta_t # current time
 
             # calculate collective variables (only once per timestep)
-            m_cos_t = m_cos(N, x_i, S_i[i, :], phi)
-            m_sin_t = m_sin(N, x_i, S_i[i, :], phi)
+            m_cos_t = m_cos(N, x_i, S_i[i, :])
+            m_sin_t = m_sin(N, x_i, S_i[i, :])
 
             # calulate input to each neuron
             if !I_ext_bool # no external input
-                I_t = I.(J, x_i, m_cos_t, m_sin_t, 0.0)
+                I_t = I.(J, x_i, m_cos_t, m_sin_t, 0.0, phi)
             else
                 I_ext_t = I_ext.(x_i, t)
-                I_t = I.(J, x_i, m_cos_t, m_sin_t, I_ext_t) # TODO: check it broadcasts the x_i AND the I_ext_t
+                I_t = I.(J, x_i, m_cos_t, m_sin_t, I_ext_t, phi) # TODO: check it broadcasts the x_i AND the I_ext_t
             end
 
             # update potential at next timestep
