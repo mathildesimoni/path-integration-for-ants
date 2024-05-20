@@ -31,7 +31,6 @@ I_ext_bool = false # no external input
 h_init_L = rand(Uniform(0,1), N) 
 h_init_R = rand(Uniform(0,1), N)
 
-
 # simulate the network activity
 spikes_L, spikes_R = simulate_networks(h_init_L, h_init_R, x_i, N, delta_t, n, R, tau, I_ext_bool, J, alpha, beta, ro, theta)
 spikes = (spikes_L + spikes_R)./2
@@ -47,4 +46,7 @@ bump_location_bins_R = transpose(reshape(bump_location_R[1:n], bin_length, Int((
 avg_bump_location_R = locate_bump_avg.(Ref(ones(bin_length)), eachrow(bump_location_bins_R))
 plot!(0:bin_length:n-1, avg_bump_location_R * (N/(2*pi)), label = "center of the bump")
 
-savefig("data/Q21.pdf")
+last_mean = ((avg_bump_location_R + avg_bump_location_L)/2)[end]
+print(last_mean)
+
+savefig("data/Q22.pdf")
