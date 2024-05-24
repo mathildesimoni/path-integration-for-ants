@@ -1,32 +1,27 @@
 using Revise
-a = push!(LOAD_PATH, pwd()*"/src")
+a = push!(LOAD_PATH, pwd()*"/src", @__DIR__)
 using Plots, LaTeXStrings
 default(fontfamily="Computer Modern")
-using Neurons, BumpAttractor
+using Neurons, SingleBumpAttractor, BumpAttractorUtils
 using Random, Distributions
+using Q1
 
-# Network parameters
-N = 300 # number of poisson neurons
+N = np.N
+
+n = sp.n
+T = sp.T
+delta_t = sp.delta_t
+
 x_i = collect(range(start = 0, stop = 2*pi, length = N + 1)[1:N]) # equally spaced neurons over the range [0, 2pi)
 h_init = rand(Uniform(0,1), N) # initial potential values sampled from the uniform distribution
-R = 1 # resistance in Mohm
-tau = 10.0 # characteristic time in ms
-alpha = 2.0 # parameter for the transfer function in 1/mV
-beta = 0.5 # parameter for the transfer function in mV
-ro = 1 # parameter for the mean firing rate function in 1/ms
-I_ext_bool = false # no external input
-J = 5
-
-# simulation parameters
-delta_t = 0.1 # timestep for the simulation in ms. MUST BE <= 1
-T = 1000 # simulation length in ms
-n = Int64(T/delta_t)
 
 # plot parameters
 nb_ticks_x = 5
 
+I_ext(x::Real, t::Real) = 0.0
+
 # simulate the network activity
-spikes = simulate_network(h_init, x_i, N, delta_t, n, R, tau, I_ext, J, alpha, beta, ro)
+spikes = SingleBumpAttractor.simulate_network(h_init, x_i, I_ext, 0.0, sp, np)
 heatmap(transpose(spikes), 
         title="Network Activity", 
         xlabel=L"t"*" (ms)", 
@@ -65,4 +60,4 @@ heatmap(transpose(spikes),
         xticks = (Int.(0:n/nb_ticks_x:n), 
         Int.(0:T/nb_ticks_x:T)))
 plot!(0:bin_length:n-1, avg_bump_location * (N/(2*pi)), label = "center of the bump")
-savefig("data/Q12.pdf")
+# savefig("data/Q12.pdf")
