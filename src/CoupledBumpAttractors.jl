@@ -75,14 +75,9 @@ module CoupledBumpAttractors
                 I_ext_t_L = I_ext_init.(x_i, pi)
                 I_ext_t_R = I_ext_init.(x_i, pi)
                 current_theta = 0.0
-            elseif !sp.I_ext_bool # no external input
-                I_ext_t_L = 0.0
-                I_ext_t_R = 0.0
-                current_theta = theta
             else
                 I_ext_t_L = I_ext_L.(x_i, t)
                 I_ext_t_R = I_ext_R.(x_i, t)
-
                 current_theta = theta
             end
             I_t_L = I.(J, x_i, m_cos_t_L, m_sin_t_L, m_cos_t_R, m_sin_t_R, I_ext_t_L, current_theta) # TODO: check it broadcasts the x_i AND the I_ext_t

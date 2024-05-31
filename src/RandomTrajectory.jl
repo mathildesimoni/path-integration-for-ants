@@ -13,7 +13,10 @@ module RandomTrajectory
         angles = zeros(Float64, n+1)
         angles[1] = pi
         for i in range(1, length=n)
-            angles[i+1] = rand(Normal(angles[i], volatility))
+            angles[i+1] = rand(Normal(angles[i], volatility)) % (2*pi)
+            if angles[i+1] < 0
+                angles[i+1] += 2*pi
+            end
             pos[i+1, :] = pos[i, :] + speed *  delta_t * [cos(angles[i+1]), sin(angles[i+1])]
         end
         return angles, pos

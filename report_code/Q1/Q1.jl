@@ -13,7 +13,6 @@ module Q1
         T=T,
         delta_t=delta_t,
         n = Int64(T/delta_t),
-        I_ext_bool = false # no external input
     )
 
     # Network parameters

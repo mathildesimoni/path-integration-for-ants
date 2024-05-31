@@ -1,4 +1,4 @@
-module Q2
+module Q3
     using BumpAttractorUtils
     using Distributions
 
@@ -8,6 +8,8 @@ module Q2
     T = 1000 # simulation length in ms
     delta_t = 0.1 # timestep for the simulation in ms. MUST BE <= 1
     n = Int64(T/delta_t)
+    speed = 0.001  # m/ms
+    volatility = 0.05
 
     sp = SimulationParameters(
         # Network parameters
@@ -27,14 +29,7 @@ module Q2
         J = 3
     )
 
-    function I_ext(x::Real, t::Real)
-        # using cases, k is 1 if 300 < t < 600, 2 if 600 < t < 900, 3 if 900 < t < 1200
-        k = 300 <= t < 400 ? 1 :
-            600 <= t < 700 ? 2 :
-            return 0.0
-        std = pi/8
-        mean = k == 1 ? 2*pi/3 : 4*pi/3 
-        return pdf(Normal(mean, std), x)
-    end
-    
+    I_ext_head(x::Real, t::Real, Io::Real, theta::Function) = Io*cos(x-theta(t))
+
+
 end

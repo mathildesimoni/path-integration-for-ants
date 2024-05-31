@@ -5,6 +5,7 @@ default(fontfamily="Computer Modern")
 using Neurons, SingleBumpAttractor
 using Random, Distributions
 using Q1
+using BumpAttractorUtils
 
 N = np.N
 n = sp.n
@@ -27,7 +28,6 @@ for t in t_values
 end
 plot(p1)
 savefig("data/Q14_I_ext.pdf")
-
 
 # simulate the network activity
 spikes = SingleBumpAttractor.simulate_network(h_init, x_i, Q1.I_ext, 0.0, sp, np)
