@@ -39,6 +39,18 @@ bin_size = 10 # ms, as advised in the instructions
 bin_length = Int64(bin_size/delta_t)
 bump_location_bins = transpose(reshape(bump_location[1:n], bin_length, Int((n)/bin_length)))
 avg_bump_location = locate_bump_avg.(Ref(ones(bin_length)), eachrow(bump_location_bins)) # need to use a circular mean method again
-heatmap(transpose(spikes), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "Neuron Location", c = :grayC, colorbar=false, right_margin = 3Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = N , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n/nb_ticks_x:n), Int.(0:T/nb_ticks_x:T)))
+heatmap(transpose(spikes), 
+        title="Network Activity", 
+        xlabel=L"t"*" (ms)", 
+        ylabel= "Neuron Location", 
+        c = reverse(cgrad(:grayC)), 
+        colorbar=false, 
+        right_margin = 3Plots.mm, 
+        left_margin = 2Plots.mm, 
+        yticks = (range(start = 0, stop = N , length =5), 
+        [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), 
+        xticks = (Int.(0:n/nb_ticks_x:n), 
+        Int.(0:T/nb_ticks_x:T)))
+
 plot!(0:bin_length:n-1, avg_bump_location * (N/(2*pi)), label = "center of the bump")
 # savefig("data/Q14.pdf")

@@ -29,6 +29,17 @@ for J in J_values
     np.J = J
     filename = "data/Q11_J_" * string(J) * ".pdf"
     spikes = SingleBumpAttractor.simulate_network(h_init, x_i, I_ext, 0.0, sp, np)
-    heatmap(transpose(spikes), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "neuron location", c = :grayC, colorbar=false, right_margin = 5Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = np.N , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n/nb_ticks_x:n), Int.(0:T/nb_ticks_x:T)))
+    heatmap(transpose(spikes), 
+            title = "Network Activity", 
+            xlabel = L"t"*" (ms)", 
+            ylabel = "neuron location", 
+            c = reverse(cgrad(:grayC)), 
+            colorbar = false, 
+            right_margin = 5Plots.mm, 
+            left_margin = 2Plots.mm, 
+            yticks = (range(start = 0, stop = np.N , length =5), 
+            [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), 
+            xticks = (Int.(0:n/nb_ticks_x:n), 
+            Int.(0:T/nb_ticks_x:T)))
     savefig(filename) 
 end

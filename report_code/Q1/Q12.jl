@@ -60,4 +60,4 @@ heatmap(transpose(spikes),
         xticks = (Int.(0:n/nb_ticks_x:n), 
         Int.(0:T/nb_ticks_x:T)))
 plot!(0:bin_length:n-1, avg_bump_location * (N/(2*pi)), label = "center of the bump")
-# savefig("data/Q12.pdf")
+savefig("data/Q12.pdf")

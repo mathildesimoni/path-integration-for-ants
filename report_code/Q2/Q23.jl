@@ -25,9 +25,10 @@ I_ext_bool = true # no external input
 h_init_L = rand(Uniform(0,1), N) 
 h_init_R = rand(Uniform(0,1), N)
 
-spikes_L, spikes_R = CoupledBumpAttractors.simulate_network(h_init_L, h_init_R, Q2.I_ext, Q2.I_ext, x_i, theta, sp, np)
+I_ext(x::Real, t::Real) = 0.0
+
+spikes_L, spikes_R = CoupledBumpAttractors.simulate_network(h_init_L, h_init_R, I_ext, I_ext, x_i, theta, sp, np)
 spikes = (spikes_L + spikes_R)./2
-# heatmap(transpose(spikes), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "Neuron Location", c = reverse(cgrad(:grayC)), colorbar=false, right_margin = 3Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = N , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n/nb_ticks_x:n), Int.(0:T/nb_ticks_x:T)))
 
 bump_location_L = locate_bump.(eachrow(spikes_L), Ref(x_i))
 bump_location_bins_L = transpose(reshape(bump_location_L[1:n], bin_length, Int((n)/bin_length)))
