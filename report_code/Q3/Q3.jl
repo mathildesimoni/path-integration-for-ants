@@ -8,8 +8,8 @@ module Q3
     T = 1000 # simulation length in ms
     delta_t = 0.1 # timestep for the simulation in ms. MUST BE <= 1
     n = Int64(T/delta_t)
-    speed = 0.001  # m/ms
-    volatility = 0.05
+    speed = 0.01  # m/ms
+    volatility = 0.08
 
     sp = SimulationParameters(
         # Network parameters
@@ -30,6 +30,5 @@ module Q3
     )
 
     I_ext_head(x::Real, t::Real, Io::Real, theta::Function) = Io*cos(x-theta(t))
-
 
 end
