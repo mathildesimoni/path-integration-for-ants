@@ -6,7 +6,7 @@ module Utils
     function split_into_segments(data::Array)
         diff_data = diff(data)
         diff_data = abs.(diff_data)
-        tol = mean(diff_data) * 5
+        tol = mean(diff_data) * 10
         println(tol)
         idx = findall(x -> x > tol, diff_data)
         
@@ -52,7 +52,7 @@ module Utils
         N::Int, 
         p::Plots.Plot;
         color::Symbol=:black, 
-        label::Union{String, Bool}=false
+        label::Union{LaTeXString, String, Bool}=false
     )
         angles = map_angle_to_idx.(angles, N)
         segments = split_into_segments(angles)
@@ -72,6 +72,7 @@ module Utils
         sp::SimulationParameters,
         np::NetworkParameters;
         color::Symbol=:orange,
+        label::Union{LaTeXString, String, Bool}=false
     )
         bin_length = Int64(bin_size/sp.delta_t)
         bump_location = locate_bump.(eachrow(spikes), Ref(x_i))
@@ -83,7 +84,7 @@ module Utils
         count = 0
         for segment in segments
             new_n = count + length(segment)-1
-            label = count == 0 ? L"\theta_{\mathrm{bump}}^{\mathrm{H}}" : false
+            label = count == 0 ? label : false
             plot!(count*bin_length:bin_length:new_n*bin_length, segment, label=label, color=color, lw=1)
             count = new_n + 1
         end

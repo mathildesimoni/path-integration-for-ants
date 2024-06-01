@@ -11,7 +11,7 @@ module RandomTrajectory
         n = Int64(round(T/delta_t))
         pos = zeros(Float64, (n+1, 2))
         angles = zeros(Float64, n+1)
-        angles[1] = pi
+        angles[1] = 0
         for i in range(1, length=n)
             angles[i+1] = rand(Normal(angles[i], volatility)) % (2*pi)
             if angles[i+1] < 0
