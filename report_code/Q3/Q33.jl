@@ -39,11 +39,11 @@ I_ext(x, t) = Q3.I_ext_head(x, t, Io, theta)
 S_i = SingleBumpAttractor.simulate_network(h_init_H, x_i, I_ext, 0.0, sp, np)
 Utils.raster_plot(S_i, sp, np)
 
-I_head_val = S_i * cos.(x_i)
+I_head_val = (S_i/delta_t) * cos.(x_i)
 I_head(t) = I_head_val[t_to_idx(t)]
 
-J_head = 10
-I_ext_L(x, t) = - J_head/N * I_head(t)
+J_head = 1
+I_ext_L(x, t) = -J_head/N * I_head(t)
 I_ext_R(x, t) = J_head/N * I_head(t)
 
 # coupled bump attractors
