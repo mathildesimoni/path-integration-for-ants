@@ -32,6 +32,6 @@ S_i = SingleBumpAttractor.simulate_network(h_init, x_i, I_ext, 0.0, sp, np)
 p = Utils.raster_plot(S_i, sp, np)
 bin_size = 5 # ms, as advised in the instructions
 Utils.plot_angle_location(angles, N, p, color = :lightblue, label=LaTeXString(L"\theta^{\mathrm{H}}"))
-Utils.plot_avg_bump_location(S_i, x_i, bin_size, sp, np, color = :red, label=LatexString(L"\theta_{\mathrm{bump}}^{\mathrm{H}}"))
+Utils.plot_avg_bump_location(S_i, x_i, bin_size, sp, np, color = :red, label=LaTeXString(L"\theta_{\mathrm{bump}}^{\mathrm{H}}"))
 display(p)
 
