@@ -100,7 +100,7 @@ module Utils
 
     map_angle_to_idx(angle, N) = Int(floor(angle/(2*pi) * N)) + 1
 
-    function plot_segments(x::Array, y::Array; color::Symbol=:black, label::Union{LaTeXString, String, Bool}=false, tol::Real=50)
+    function plot_segments(x::Array, y::Array; color::Symbol=:black, label::Union{LaTeXString, String, Bool}=false, tol::Real=50, xlabel="", ylabel="")
         segments = split_into_segments(y, tol)
         count = 1
         for segment in segments
@@ -109,5 +109,7 @@ module Utils
             plot!(x[count:new_n], segment, label=label, color=color, lw=1, grid=false)
             count = new_n + 1
         end
+        xlabel!(xlabel)
+        ylabel!(ylabel)
     end
 end

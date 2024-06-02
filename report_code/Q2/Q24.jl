@@ -26,7 +26,7 @@ h_init_L = rand(Uniform(0,1), N)
 h_init_R = rand(Uniform(0,1), N)
 
 # external input
-Io_values = range(-1.5, 1.5, 51)
+Io_values = range(-1.5, 1.5, 101)
 
 last_means = zeros(size(Io_values)[1])
 for (i, Io) in enumerate(Io_values)
@@ -40,9 +40,9 @@ for (i, Io) in enumerate(Io_values)
 end
 
 p = plot()
-Utils.plot_segments(collect(Io_values), last_means, tol = 8)
-vline!([-0.35,0.35], legend = false)
+p = Utils.plot_segments(collect(Io_values), last_means, tol = 1, xlabel = L"I_o", ylabel = L"\theta_{mean}")
+yticks!(range(start = minimum(last_means), stop = maximum(last_means) , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"])
+vline!([-0.35,0.35], legend = false, color = :Purple)
 display(p)
-
 savefig("./data/Q24.pdf")
 

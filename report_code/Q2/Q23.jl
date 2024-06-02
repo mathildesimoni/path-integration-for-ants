@@ -34,7 +34,7 @@ avg_bump_location_R = Utils.spikes_to_average_bump_location(spikes_R, x_i, bin_s
 # plot
 spikes = (spikes_L + spikes_R)./2 # for the plots
 p = Utils.raster_plot(spikes, sp, np)
-Utils.plot_segments(collect(0:bin_length:n-1), avg_bump_location_L * (N/(2*pi)), color = :blue, label = "center of the left bump")
-Utils.plot_segments(collect(0:bin_length:n-1), avg_bump_location_R * (N/(2*pi)), color = :red, label = "center of the right bump")
+Utils.plot_segments(collect(0:bin_length:n-1), avg_bump_location_L * (N/(2*pi)), color = :blue, label = "center of the left bump", tol = 5)
+Utils.plot_segments(collect(0:bin_length:n-1), avg_bump_location_R * (N/(2*pi)), color = :red, label = "center of the right bump", tol = 5)
 display(p)
-savefig("data/Q23.pdf")
+# savefig("data/Q23.pdf")
