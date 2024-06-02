@@ -20,23 +20,29 @@ x_i = collect(range(start = 0, stop = 2*pi, length = N + 1)[1:N]) # equally spac
 h_init = rand(Uniform(0,1), N) # initial potential values sampled from the uniform distribution
 sp.delay = 500
 
-# external input
-angles, pos = RandomTrajectory.random_trajectory(Q3.speed, T, delta_t, Q3.volatility)
-p = RandomTrajectory.plot_trajectory(pos[:,1], pos[:,2], angles)
-display(p)
-
 Io = 1
-t_to_idx(t) = Int(floor(t/delta_t)) + 1
-theta(t) = angles[t_to_idx(t)]
-I_ext(x, t) = Q3.I_ext_head(x, t, Io, theta)
+sigmas = [0.01, 0.08]
 
-# simulate network
-S_i = SingleBumpAttractor.simulate_network(h_init, x_i, I_ext, 0.0, sp, np)
+for sigma in sigmas
+    
+    # external input
+    angles, pos = RandomTrajectory.random_trajectory(Q3.speed, T, delta_t, sigma)
+    p = RandomTrajectory.plot_trajectory(pos[:,1], pos[:,2], angles)
+    plot!(title = "Ant Trajectory")
+    savefig("data/Q32_trajectory_sigma_" * string(sigma) * ".pdf")
 
-# plot
-p = Utils.raster_plot(S_i, sp, np)
-Utils.plot_angle_location(angles, N, color = :lightblue, label=LaTeXString(L"\theta_{\mathrm{input}}^{\mathrm{H}}"), tol = 30)
-Utils.plot_avg_bump_location(S_i, x_i, bin_size, sp, np, color = :red, label=LaTeXString(L"\theta_{\mathrm{bump}}^{\mathrm{H}}"), tol = 10)
-xlabel!(L"t"*" (ms)")
-ylabel!("Neuron Location")
-display(p)
+    theta(t) = angles[Q3.t_to_idx(t)]
+    I_ext(x, t) = Q3.I_ext_head(x, t, Io, theta)
+
+    # simulate network
+    S_i = SingleBumpAttractor.simulate_network(h_init, x_i, I_ext, 0.0, sp, np)
+
+    # plot
+    p = Utils.raster_plot(S_i, sp, np)
+    Utils.plot_angle_location(angles, N, color = :lightblue, label=LaTeXString(L"\theta_{\mathrm{input}}^{\mathrm{H}}"), tol = 30)
+    Utils.plot_avg_bump_location(S_i, x_i, bin_size, sp, np, color = :red, label=LaTeXString(L"\theta_{\mathrm{bump}}^{\mathrm{H}}"), tol = 10)
+    xlabel!(L"t"*" (ms)")
+    ylabel!("Neuron Location")
+    plot!(title = "Bump Location and Head Direction")
+    savefig("data/Q32_bump_sigma_" * string(sigma) * ".pdf")
+end
