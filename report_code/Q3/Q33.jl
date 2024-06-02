@@ -65,8 +65,8 @@ for (i, J) in enumerate(J_head_range)
     bump_locations[i] = last_bump_location - first_bump_location
 end 
 
+p = plot()
+Utils.plot_segments(J_head_range, bump_locations)
+display(p)
 
-# Utils.plot_segments(J_head_range, bump_locations)
-plot(J_head_range, bump_locations)
-
-plot(pos[:,1])
+# plot(pos[:,1])
