@@ -5,6 +5,7 @@ default(fontfamily="Computer Modern")
 using Neurons, SingleBumpAttractor, BumpAttractorUtils
 using Random, Distributions
 using Q1
+using Utils
 
 N = np.N
 J = np.J
@@ -19,27 +20,19 @@ nb_ticks_x = 5
 
 I_ext(x::Real, t::Real) = 0.0
 
-filename = "data/Q11_J_" * string(J) * ".pdf"
-spikes = SingleBumpAttractor.simulate_network(h_init, x_i, I_ext, 0.0, sp, np)
-heatmap(transpose(spikes), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "neuron location", c = :grayC, colorbar=false, right_margin = 5Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = N , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n/nb_ticks_x:n), Int.(0:T/nb_ticks_x:T)))
-
 # ranging J
-J_values = [0.1, 0.5, 1, 2, 3, 4, 5, 6, 10, 20, 50, 100]
+J_values = [0, 4.6, 4.7, 4.8, 5]
 for J in J_values
     np.J = J
-    filename = "data/Q11_J_" * string(J) * ".pdf"
+    str_J = replace(string(J), "." => "_")
+    filename = "data/Q11_J_" * str_J * ".pdf"
     spikes = SingleBumpAttractor.simulate_network(h_init, x_i, I_ext, 0.0, sp, np)
-    heatmap(transpose(spikes), 
-            title = "Network Activity", 
-            xlabel = L"t"*" (ms)", 
-            ylabel = "neuron location", 
-            c = reverse(cgrad(:grayC)), 
-            colorbar = false, 
-            right_margin = 5Plots.mm, 
-            left_margin = 2Plots.mm, 
-            yticks = (range(start = 0, stop = np.N , length =5), 
-            [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), 
-            xticks = (Int.(0:n/nb_ticks_x:n), 
-            Int.(0:T/nb_ticks_x:T)))
-    savefig(filename) 
+    Utils.raster_plot(spikes, sp, np, title="")
 end
+
+np.J = 5
+spikes = SingleBumpAttractor.simulate_network(h_init, x_i, I_ext, 0.0, sp, np)
+str_J = replace(string(np.J), "." => "_")
+Utils.raster_plot(spikes, sp, np, title=LaTeXString("\$J=$(np.J)\$"))
+filename = "data/Q11_J_" * str_J * ".pdf"
+savefig(filename) 

@@ -6,6 +6,7 @@ module Q1
     export np, sp
 
     T = 1000 # simulation length in ms
+    # T = 100_000 # simulation length in ms
     delta_t = 0.1 # timestep for the simulation in ms. MUST BE <= 1
 
     # simulation parameters

@@ -1,9 +1,9 @@
 using Revise
-println(Revise.errors())
 a = push!(LOAD_PATH, pwd()*"/src", @__DIR__)
 using Plots, LaTeXStrings
 default(fontfamily="Computer Modern")
 using Distributions
+println(Revise.errors())
 
 using BumpAttractorUtils, SingleBumpAttractor
 using Q3
