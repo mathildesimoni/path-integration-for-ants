@@ -6,7 +6,9 @@ using Neurons, SingleBumpAttractor
 using Random, Distributions
 using Q1
 using BumpAttractorUtils
+using Utils
 
+np.tau = 3.0
 N = np.N
 n = sp.n
 T = sp.T
@@ -18,39 +20,42 @@ h_init = rand(Uniform(0,1), N) # initial potential values sampled from the unifo
 # plot parameters
 nb_ticks_x = 5
 
-# plot I_ext for different times
-t_values = [350, 500, 650]
-p1 = plot()
-plot!(xlabel=L"x_i", ylabel=L"I_{ext}")
-for t in t_values
-    I_ext_t = Q1.I_ext.(x_i, t)
-    plot!(x_i, I_ext_t, label="t=$t", lw=2)
-end
-plot(p1)
-savefig("data/Q14_I_ext.pdf")
+# # plot I_ext for different times
+# t_values = [350, 500, 650]
+# p1 = plot()
+# plot!(xlabel=L"x_i", ylabel=L"I_{ext}")
+# for t in t_values
+#     I_ext_t = Q1.I_ext.(x_i, t)
+#     plot!(x_i, I_ext_t, label="t=$t", lw=2)
+# end
+# plot(p1)
+# savefig("data/Q14_I_ext.pdf")
 
 # simulate the network activity
 spikes = SingleBumpAttractor.simulate_network(h_init, x_i, Q1.I_ext, 0.0, sp, np)
 
-# find the location of the bump at every timestep
-bump_location = locate_bump.(eachrow(spikes), Ref(x_i))
-# average location of the bump over small bins of time (to have a clearer plot)
-bin_size = 10 # ms, as advised in the instructions
-bin_length = Int64(bin_size/delta_t)
-bump_location_bins = transpose(reshape(bump_location[1:n], bin_length, Int((n)/bin_length)))
-avg_bump_location = locate_bump_avg.(Ref(ones(bin_length)), eachrow(bump_location_bins)) # need to use a circular mean method again
-heatmap(transpose(spikes), 
-        title="Network Activity", 
-        xlabel=L"t"*" (ms)", 
-        ylabel= "Neuron Location", 
-        c = reverse(cgrad(:grayC)), 
-        colorbar=false, 
-        right_margin = 3Plots.mm, 
-        left_margin = 2Plots.mm, 
-        yticks = (range(start = 0, stop = N , length =5), 
-        [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), 
-        xticks = (Int.(0:n/nb_ticks_x:n), 
-        Int.(0:T/nb_ticks_x:T)))
+p = Utils.raster_plot(spikes, sp, np, title=LaTeXString("\$\\tau=$(np.tau)\$"))
 
-plot!(0:bin_length:n-1, avg_bump_location * (N/(2*pi)), label = "center of the bump")
-# savefig("data/Q14.pdf")
+map_time_to_idx(t) = Int(round(t/sp.delta_t))
+plot!(map_time_to_idx.([300, 300, 400, 400]), [0, np.N, np.N, 0], lw=1, fill=(0, 0.25, :lightblue), color=:transparent, label=L"$I_\mathrm{ext}\neq 0$")
+plot!(map_time_to_idx.([600, 600, 700, 700]), [0, np.N, np.N, 0], lw=1, fill=(0, 0.25, :lightblue), label=false, color=:transparent)
+
+bin_size = 10 # ms, as advised in the instructions
+Utils.plot_avg_bump_location(spikes, x_i, bin_size, sp, np)
+# plot horizontal lines at 2*pi/3 and 4*pi/3 
+idx = Utils.map_angle_to_idx(2*pi/3, np.N)
+plot!([0, sp.n], [idx, idx], lw=1, ls=:dash, label=false, color=:black)
+idx = Utils.map_angle_to_idx(4*pi/3, np.N)
+plot!([0, sp.n], [idx, idx], lw=1, ls=:dash, label=false, color=:black)
+
+# update y ticks
+yticks!((
+    Utils.map_angle_to_idx.([0, 2pi/3, pi, 4pi/3, 2pi], np.N),
+    [L"0", L"\frac{2\pi}{3}", L"\pi", L"\frac{4\pi}{3}", L"2 \pi"])
+)
+
+
+
+display(p)
+tau_str = replace(string(np.tau), "." => "_")
+savefig("data/Q14_tau_$tau_str.pdf")

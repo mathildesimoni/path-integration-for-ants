@@ -1,11 +1,13 @@
 using Revise
-a = push!(LOAD_PATH, pwd()*"/src")
+a = push!(LOAD_PATH, pwd()*"/src", @__DIR__)
 using Plots, LaTeXStrings
 default(fontfamily="Computer Modern")
 using Neurons, SingleBumpAttractor
 using Random, Distributions
 using Q1
+using Utils
 
+np.tau = 10.0
 # default parameters
 N = np.N
 n = sp.n
@@ -25,7 +27,8 @@ np_test = deepcopy(np)
 sp_test = deepcopy(sp)
 
 # Ranging number of poissons neurons
-N_values = [50, 100, 300, 500, 1000]
+# N_values = [100, 300, 500, 1000, 10_000]
+N_values = [300]
 for N_test in N_values
 
     np_test.N = N_test
@@ -36,32 +39,16 @@ for N_test in N_values
     spikes = SingleBumpAttractor.simulate_network(h_init_test, x_i_test, I_ext, 0.0, sp, np_test)
     
     # find the location of the bump at every timestep and average over small bins of time
-    bump_location = locate_bump.(eachrow(spikes), Ref(x_i_test))
-    bin_length = Int64(bin_size/delta_t)
-    bump_location_bins = transpose(reshape(bump_location[1:n], bin_length, Int((n)/bin_length)))
-    avg_bump_location = locate_bump_avg.(Ref(ones(bin_length)), eachrow(bump_location_bins)) # need to use a circular mean method again
-    heatmap(transpose(spikes), 
-            title="Network Activity (" * string(N_test) * " Neurons)", 
-            xlabel=L"t"*" (ms)", 
-            ylabel= "Neuron Location", 
-            c = reverse(cgrad(:grayC)), 
-            colorbar=false, 
-            right_margin = 3Plots.mm, 
-            left_margin = 2Plots.mm, 
-            yticks = (range(start = 0, stop = N_test , length =5), 
-            [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), 
-            xticks = (Int.(0:n/nb_ticks_x:n), 
-            Int.(0:T/nb_ticks_x:T))
-            )
-    plot!(0:bin_length:n-1, avg_bump_location * (N_test/(2*pi)), label = "center of the bump")
+    p = Utils.raster_plot(spikes, sp, np_test, title=LaTeXString("\$N=$N_test\$"))
+    Utils.plot_avg_bump_location(spikes, x_i_test, bin_size, sp, np_test)
     filename = "data/Q13_N_" * string(N_test) * ".pdf"
     savefig(filename)
 end
 
-np_test.N = np.N # reset to default value
+ np_test.N = np.N # reset to default value
 
 # Ranging timescale
-tau_values = [1, 5, 10, 20, 30, 40]
+ tau_values = [1, 5, 10, 20, 30, 40]
 for tau_test in tau_values
     
     np_test.tau = tau_test

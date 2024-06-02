@@ -34,13 +34,15 @@ new_spikes = simulate_spikes(new_N, h_init, delta_t, T, R, Io, omega, alpha, bet
 new_avg_population_spikes_per_ms = compute_rate(new_spikes, delta_t, bin_length, new_N, n)
 
 bin_t = range(0, T, Int64(T/bin_length))
-plot(bin_t, avg_population_spikes_per_ms, title="Population firing rate", lw=1, xlabel=L"t"*" (ms)", label=L"N = %$(N)")
+# plot(bin_t, avg_population_spikes_per_ms, title="Population firing rate", lw=1, xlabel=L"t"*" (ms)", label=L"N = %$(N)")
+plot(bin_t, avg_population_spikes_per_ms, lw=1, xlabel=L"t"*" (ms)", label=L"N = %$(N)")
 plot!(bin_t, new_avg_population_spikes_per_ms, lw=1, xlabel=L"t"*" (ms)", label=L"N = %$(new_N)")
 theoretical_t = range(0, T, n+1)
 plot!(theoretical_t, theoretical_r.(theoretical_t, alpha, beta, ro, Io, omega), lw=2, xlabel=L"t"* " (ms)", label="Theoretical", alpha=0.5)
 
 # THIS IS THE ONLY FIGURE WE NEED 
-savefig("data/Q02_N$(N)_vs_N$(new_N)_rate_vs_theoretical_T$(T).pdf") 
+# savefig("data/Q02_N$(N)_vs_N$(new_N)_rate_vs_theoretical_T$(T).pdf") 
+savefig("data/Q02.pdf")
 
 
 # Zoom in 

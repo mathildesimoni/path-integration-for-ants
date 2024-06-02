@@ -82,7 +82,8 @@ module Utils
         sp::SimulationParameters,
         np::NetworkParameters;
         color::Symbol=:orange,
-        label::Union{LaTeXString, String, Bool}=false
+        label::Union{LaTeXString, String, Bool}=false,
+        tol::Real=10
     )
         bin_length = Int64(bin_size/sp.delta_t)
         (n, N) = size(spikes)
@@ -95,7 +96,7 @@ module Utils
         avg_bump_location = map_angle_to_idx.(avg_bump_location, N)
         n = length(avg_bump_location)
         x = collect(0:bin_length:n*bin_length)
-        plot_segments(x, avg_bump_location, color=color, label=label)
+        plot_segments(x, avg_bump_location, color=color, label=label, tol=tol)
     end
 
     map_angle_to_idx(angle, N) = Int(floor(angle/(2*pi) * N)) + 1
