@@ -50,7 +50,7 @@ module CoupledBumpAttractors
         J = np.J
 
         # initialization
-        h_t_L = zeros(Float64, (n+1+delay, N)) # TODO: no need to store the full matrix if we don't return it
+        h_t_L = zeros(Float64, (n+1+delay, N))
         h_t_R = zeros(Float64, (n+1+delay, N)) 
         h_t_L[1, :] = h_init_L
         h_t_R[1, :] = h_init_R
@@ -80,7 +80,7 @@ module CoupledBumpAttractors
                 I_ext_t_R = I_ext_R.(x_i, t)
                 current_theta = theta
             end
-            I_t_L = I.(J, x_i, m_cos_t_L, m_sin_t_L, m_cos_t_R, m_sin_t_R, I_ext_t_L, current_theta) # TODO: check it broadcasts the x_i AND the I_ext_t
+            I_t_L = I.(J, x_i, m_cos_t_L, m_sin_t_L, m_cos_t_R, m_sin_t_R, I_ext_t_L, current_theta)
             I_t_R = I.(J, x_i, m_cos_t_L, m_sin_t_L, m_cos_t_R, m_sin_t_R, I_ext_t_R, -current_theta) 
 
             # update potential at next timestep

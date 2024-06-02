@@ -10,31 +10,28 @@ using Utils
 N = np.N
 n = sp.n
 T = sp.T
-
 x_i = collect(range(start = 0, stop = 2*pi, length = N + 1)[1:N]) # equally spaced neurons over the range [0, 2pi)
+I_ext(x::Real, t::Real) = 0.0 # no external input
 
 # plot parameters
 nb_ticks_x = 5
 bin_size = 10 # ms, as advised in the instructions
 bin_length = Int64(bin_size/sp.delta_t)
 
-# new parameters
+# coupled bump attractor parameters
 theta = deg2rad(10) # 10 degres
-I_ext_bool = false # no external input
 h_init_L = rand(Uniform(0,1), N) 
 h_init_R = rand(Uniform(0,1), N)
 
-I_ext(x::Real, t::Real) = 0.0
-
 # simulate the network activity
 spikes_L, spikes_R = CoupledBumpAttractors.simulate_network(h_init_L, h_init_R, I_ext, I_ext, x_i, theta, sp, np)
-spikes = (spikes_L + spikes_R)./2
-Utils.raster_plot(spikes, sp, np)
 avg_bump_location_L = Utils.spikes_to_average_bump_location(spikes_L, x_i, bin_size, sp)
-plot!(0:bin_length:n-1, avg_bump_location_L * (N/(2*pi)), label = "center of the bump")
-
-# heatmap!(transpose(spikes_R), title="Network Activity", xlabel=L"t"*" (ms)", ylabel= "Neuron Location", c = reverse(cgrad(:grayC)), colorbar=false, right_margin = 3Plots.mm, left_margin = 2Plots.mm, yticks = (range(start = 0, stop = N , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"]), xticks = (Int.(0:n/nb_ticks_x:n), Int.(0:T/nb_ticks_x:T)))
 avg_bump_location_R = Utils.spikes_to_average_bump_location(spikes_R, x_i, bin_size, sp)
-plot!(0:bin_length:n-1, avg_bump_location_R * (N/(2*pi)), label = "center of the bump")
 
-# savefig("data/Q21.pdf")
+# plot
+spikes = (spikes_L + spikes_R)./2 # for the plots
+p = Utils.raster_plot(spikes, sp, np)
+Utils.plot_segments(collect(0:bin_length:n-1), avg_bump_location_L * (N/(2*pi)), color = :blue, label = "center of the left bump")
+Utils.plot_segments(collect(0:bin_length:n-1), avg_bump_location_R * (N/(2*pi)), color = :red, label = "center of the right bump")
+display(p)
+# savefig("data/Q22.pdf")

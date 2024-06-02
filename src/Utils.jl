@@ -3,10 +3,10 @@ module Utils
     using BumpAttractorUtils
     using Plots, LaTeXStrings
 
-    function split_into_segments(data::Array)
+    function split_into_segments(data::Array, tol::Real)
         diff_data = diff(data)
         diff_data = abs.(diff_data)
-        tol = mean(diff_data) * 50
+        tol = mean(diff_data) * tol
         println(tol)
         idx = findall(x -> x > tol, diff_data)
         
@@ -86,8 +86,8 @@ module Utils
 
     map_angle_to_idx(angle, N) = Int(floor(angle/(2*pi) * N)) + 1
 
-    function plot_segments(x::Array, y::Array; color::Symbol=:black, label::Union{LaTeXString, String, Bool}=false)
-        segments = split_into_segments(y)
+    function plot_segments(x::Array, y::Array; color::Symbol=:black, label::Union{LaTeXString, String, Bool}=false, tol::Real=50)
+        segments = split_into_segments(y, tol)
         count = 1
         for segment in segments
             new_n = count + length(segment)-1
