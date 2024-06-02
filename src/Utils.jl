@@ -68,11 +68,12 @@ module Utils
         angles::Array, 
         N::Int;
         color::Symbol=:black, 
-        label::Union{LaTeXString, String, Bool}=false
+        label::Union{LaTeXString, String, Bool}=false,
+        tol::Real = 50
     )
         angles = map_angle_to_idx.(angles, N)
         n = length(angles)
-        plot_segments(0:n, angles, color=color, label=label)
+        plot_segments(collect(0:n), angles, color=color, label=label, tol = tol)
     end
 
     function plot_avg_bump_location(
