@@ -27,8 +27,8 @@ for sigma in sigmas
     
     # external input
     angles, pos = RandomTrajectory.random_trajectory(Q3.speed, T, delta_t, sigma)
-    p = RandomTrajectory.plot_trajectory(pos[:,1], pos[:,2], angles)
-    plot!(title = "Ant Trajectory")
+    plot(title = "Ant Trajectory")
+    RandomTrajectory.plot_trajectory(pos[:,1], pos[:,2])
     savefig("data/Q32_trajectory_sigma_" * string(sigma) * ".pdf")
 
     theta(t) = angles[Q3.t_to_idx(t)]
@@ -38,11 +38,9 @@ for sigma in sigmas
     S_i = SingleBumpAttractor.simulate_network(h_init, x_i, I_ext, 0.0, sp, np)
 
     # plot
-    p = Utils.raster_plot(S_i, sp, np)
+    p = Utils.raster_plot(S_i, sp, np, title = "Bump Location and Head Direction")
     Utils.plot_angle_location(angles, N, color = :lightblue, label=LaTeXString(L"\theta_{\mathrm{input}}^{\mathrm{H}}"), tol = 30)
     Utils.plot_avg_bump_location(S_i, x_i, bin_size, sp, np, color = :red, label=LaTeXString(L"\theta_{\mathrm{bump}}^{\mathrm{H}}"), tol = 10)
-    xlabel!(L"t"*" (ms)")
-    ylabel!("Neuron Location")
-    plot!(title = "Bump Location and Head Direction")
+    display(p)
     savefig("data/Q32_bump_sigma_" * string(sigma) * ".pdf")
 end

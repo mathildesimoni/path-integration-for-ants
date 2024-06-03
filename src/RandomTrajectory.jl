@@ -1,7 +1,8 @@
 module RandomTrajectory
 
     using Distributions
-    using Plots, Images
+    using Plots
+    # using Images
 
     function random_trajectory(
                 speed::Real=1.0, # speed of the ant (m/s) (if 1, then the ant moves 1m in 1000ms)
@@ -25,12 +26,18 @@ module RandomTrajectory
 
     function plot_trajectory(
                 pos_x::Array,
-                pos_y::Array,
-                angles::Array
+                pos_y::Array;
+                label::Union{Bool, String} = false,
+                start_end_labels::Bool = true,
+                color::Symbol = :blue,
+                alpha::Real = 1.0
                 )
-        p = plot(pos_x, pos_y, label=false)
-        scatter!([pos_x[1]], [pos_y[1]], color = :Green, label = "start", ms = 7)
-        scatter!([pos_x[end]], [pos_y[end]], color = :Red, label = "end", ms = 7)
+            
+        p = plot!(pos_x, pos_y, color = color, lw = 2, label = label, alpha = alpha)
+        label = start_end_labels ? "home" : ""
+        scatter!([pos_x[1]], [pos_y[1]], color = :Green, label = label, ms = 7)
+        label = start_end_labels ? "ant" : ""
+        scatter!([pos_x[end]], [pos_y[end]], color = :Red, label = label, ms = 7)
         xlabel!("x")
         ylabel!("y")
         return p

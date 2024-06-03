@@ -23,6 +23,10 @@ module Utils
         return segments
     end 
 
+    function smooth(data::Array, window_size::Int)
+        return [mean(data[i:min(i+window_size-1, end)]) for i in 1:window_size:length(data)]
+    end
+
     function raster_plot(
             spikes::Array, 
             sp::SimulationParameters, 
@@ -58,6 +62,13 @@ module Utils
         sp::SimulationParameters
     )
         bin_length = Int64(bin_size/sp.delta_t)
+        (n, N) = size(spikes)
+        n = n - 1
+
+        bump_location = locate_bump.(eachrow(spikes), Ref(x_i))
+        bump_location_bins = transpose(reshape(bump_location[1:n], bin_length, Int((n)/bin_length)))
+        avg_bump_location = locate_bump_avg.(Ref(ones(bin_length)), eachrow(bump_location_bins))
+        
         bump_location = locate_bump.(eachrow(spikes), Ref(x_i))
         bump_location_bins = transpose(reshape(bump_location[1:sp.n], bin_length, Int((sp.n)/bin_length)))
         avg_bump_location = locate_bump_avg.(Ref(ones(bin_length)), eachrow(bump_location_bins))

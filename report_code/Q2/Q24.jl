@@ -5,7 +5,7 @@ default(fontfamily="Computer Modern")
 using Random, Distributions
 using CoupledBumpAttractors, Neurons, BumpAttractorUtils
 using Q2
-
+using Utils
 sp.delay = 500
 sp.rate_neurons = true
 
@@ -40,9 +40,12 @@ for (i, Io) in enumerate(Io_values)
 end
 
 p = plot()
-p = Utils.plot_segments(collect(Io_values), last_means, tol = 1, xlabel = L"I_o", ylabel = L"\theta_{mean}")
-yticks!(range(start = minimum(last_means), stop = maximum(last_means) , length =5), [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"])
-vline!([-0.35,0.35], legend = false, color = :Purple)
+plot!([-0.3, -0.3, 0.3, 0.3], [0, 2*pi, 2*pi, 0], fill = (0, 0.25, :lightblue), label = "Linear regime", color = :transparent)
+Utils.plot_segments(collect(Io_values), last_means, tol = 4, xlabel = L"I_0", ylabel = L"\theta_{\mathrm{bump~mean}}")
+yticks!([0, pi/2, pi, 3*pi/2, 2*pi], [L"0", L"\frac{\pi}{2}", L"\pi", L"\frac{3\pi}{2}", L"2 \pi"])
+vline!([-0.3,0.3], label=false, color = :black, linestyle = :dash)
+xticks!([-1.5, -1, -0.3, 0, 0.3, 1, 1.5], ["-1.5", "-1", "-0.3", "0", "0.3", "1", "1.5"])
+plot!(grid=true)
 display(p)
 savefig("./data/Q24.pdf")
 
