@@ -24,7 +24,16 @@ module Utils
     end 
 
     function smooth(data::Array, window_size::Int)
-        return [mean(data[i:min(i+window_size-1, end)]) for i in 1:window_size:length(data)]
+        smoothed = similar(data)
+        half_window = Int(floor(window_size/2))
+        for i in eachindex(data)
+            if i <= half_window || i >= length(data) - half_window 
+                smoothed[i] = data[i]
+            else
+                smoothed[i] = mean(data[i-half_window:i+half_window])
+            end
+        end
+        return smoothed
     end
 
     function raster_plot(

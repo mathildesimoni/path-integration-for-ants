@@ -14,10 +14,12 @@ println(Revise.errors())
 Q3.init_params()
 
 np.tau = 10.0
-sp.delta_t = 0.01
+sp.delta_t = 0.1
 sp.T = 1000
 sp.n = Int64(sp.T/sp.delta_t)
-np.N = 300
+np.N = 1000
+
+Q3.volatility = 0.01
 
 angles, pos = RandomTrajectory.random_trajectory(Q3.speed, sp.T, sp.delta_t, Q3.volatility)
 
@@ -93,8 +95,25 @@ function plot_x_results()
     return p
 end
 display(plot_x_results())
-plot(pos[:,1])
-plot(bump_location_x)
+
+function plot_x_results_no_raster()
+    plot(pos[:,1], label="Target", color=:blue)
+    bin_length = Int64(bin_size/sp.delta_t)
+    ylabel!("x")
+    xlabel!("Time step")
+    return plot!(0:bin_length:sp.n-1, bump_location_x, label="Integrated", color=:orange)
+end
+display(plot_x_results_no_raster())
+
+function plot_y_results_no_raster()
+    plot(pos[:,2], label="Target", color=:blue)
+    bin_length = Int64(bin_size/sp.delta_t)
+    ylabel!("y")
+    xlabel!("Time step")
+    return plot!(0:bin_length:sp.n-1, bump_location_y, label="Integrated", color=:orange)
+end
+display(plot_y_results_no_raster())
+
 function plot_y_results()
     # raster plot
     p = Utils.raster_plot(spikes_y, sp, np)
@@ -126,3 +145,8 @@ function plot_centered_results()
     return p
 end
 display(plot_centered_results())
+
+
+
+function plot_x_y_ranges():
+    angles, pos = RandomTrajectory.random_trajectory(Q3.speed, sp.T, sp.delta_t, Q3.volatility)
