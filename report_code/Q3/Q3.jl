@@ -11,8 +11,8 @@ module Q3
     speed = 0.001  # m/ms
     # volatility = 0.1
     volatility = 0.01
-    # theta_coupled = deg2rad(10) # 10 degres 
-    theta_coupled = deg2rad(14) # 10 degres 
+    theta_coupled = deg2rad(20) # 10 degres 
+    # theta_coupled = deg2rad(14) # 10 degres 
     Io = 1
     
     global sp = SimulationParameters()

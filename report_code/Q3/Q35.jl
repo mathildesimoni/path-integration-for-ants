@@ -15,11 +15,9 @@ Q3.init_params()
 
 np.tau = 10.0
 sp.delta_t = 0.1
-sp.T = 1000
+sp.T = 3000
 sp.n = Int64(sp.T/sp.delta_t)
 np.N = 1000
-
-Q3.volatility = 0.01
 
 angles, pos = RandomTrajectory.random_trajectory(Q3.speed, sp.T, sp.delta_t, Q3.volatility)
 
@@ -59,19 +57,25 @@ bump_location_y = Utils.spikes_to_average_bump_location(spikes_y, x_i, bin_size,
 
 # Plot trajectory
 plot()
-RandomTrajectory.plot_trajectory(pos[:,1], pos[:,2], label = "Trajectory", start_end_labels = false, color=:blue)
+RandomTrajectory.plot_trajectory(pos[:,1], pos[:,2], label = "Trajectory", start_end_labels = true, color=:blue)
+savefig("data/Q35_trajectory.svg")
 
 # Raw results
 function plot_raw_results()
     p = plot()
     RandomTrajectory.plot_trajectory(pos[:,1], pos[:,2], label = "Trajectory", start_end_labels = false, color=:blue)
-    RandomTrajectory.plot_trajectory(bump_location_x, bump_location_y, label = "Integrated", start_end_labels = true, color=:orange)
+    RandomTrajectory.plot_trajectory(bump_location_x, bump_location_y, label = "Integrated", start_end_labels = false, color=:black, alpha=0.15)
+    smoothed_bump_location_x = Utils.smooth(bump_location_x, 10)
+    smoothed_bump_location_y = Utils.smooth(bump_location_y, 10)
+    RandomTrajectory.plot_trajectory(smoothed_bump_location_x, smoothed_bump_location_y, label = "Smoothed", start_end_labels = true, color=:orange)
+
+    
     # vline and hline and x,y = pi
     vline!([pi], color = :black, lw = 1, label = false, linestyle = :dash)
     hline!([pi], color = :black, lw = 1, label = false, linestyle = :dash)
     xticks!([0, 1, 2, pi], ["0", "1", "2", L"\pi"])
     yticks!([0, 1, 2, pi], ["0", "1", "2", L"\pi"])
-    savefig("data/Q35_raw_results.png")
+    savefig("data/Q35_raw_results.svg")
     return p
 end
 # display(plot_raw_results())
@@ -90,11 +94,13 @@ function plot_x_results()
     target = pos[:, 1]
     target .+= pi
     target = target .% (2*pi)
-    plot!(Utils.map_angle_to_idx.(target, np.N), label="Target", color=:blue)
-    savefig("data/Q35_x_results.png")
+    # plot!(Utils.map_angle_to_idx.(target, np.N), label="Target", color=:blue)
+    ylabel!("x")
+    xlabel!("Time step")
+    savefig("data/Q35_x_results.svg")
     return p
 end
-display(plot_x_results())
+# display(plot_x_results())
 
 function plot_x_results_no_raster()
     plot(pos[:,1], label="Target", color=:blue)
@@ -103,7 +109,7 @@ function plot_x_results_no_raster()
     xlabel!("Time step")
     return plot!(0:bin_length:sp.n-1, bump_location_x, label="Integrated", color=:orange)
 end
-display(plot_x_results_no_raster())
+# display(plot_x_results_no_raster())
 
 function plot_y_results_no_raster()
     plot(pos[:,2], label="Target", color=:blue)
@@ -112,7 +118,7 @@ function plot_y_results_no_raster()
     xlabel!("Time step")
     return plot!(0:bin_length:sp.n-1, bump_location_y, label="Integrated", color=:orange)
 end
-display(plot_y_results_no_raster())
+# display(plot_y_results_no_raster())
 
 function plot_y_results()
     # raster plot
@@ -123,30 +129,46 @@ function plot_y_results()
     target = pos[:, 2]
     target .+= pi
     target = target .% (2*pi)
-    plot!(Utils.map_angle_to_idx.(target, np.N), label="Target", color=:blue)
-    savefig("data/Q35_y_results.png")
+    # plot!(Utils.map_angle_to_idx.(target, np.N), label="Target", color=:blue)
+    ylabel!("y")
+    xlabel!("Time step")
+    savefig("data/Q35_y_results.svg")
     return p
 end
+
 display(plot_y_results())
 
 function plot_centered_results()
     p = plot()
     RandomTrajectory.plot_trajectory(pos[:,1], pos[:,2], label = "Trajectory", start_end_labels = false, color=:blue)
     RandomTrajectory.plot_trajectory(bump_location_x, bump_location_y, label = "Integrated", start_end_labels = false, color=:black, alpha=0.15)
-    
+
     # smoothed version
     window_size = 10
     smoothed_bump_location_x = Utils.smooth(bump_location_x, window_size)
     smoothed_bump_location_y = Utils.smooth(bump_location_y, window_size)
-    RandomTrajectory.plot_trajectory(smoothed_bump_location_x, smoothed_bump_location_y, label = "Integrated", start_end_labels = false, color=:orange)
-    
-
-    savefig("data/Q35_centered_results.png")
+    RandomTrajectory.plot_trajectory(smoothed_bump_location_x, smoothed_bump_location_y, label = "Smoothed", start_end_labels = true, color=:orange)
+    savefig("data/Q35_results_scaled.svg")
     return p
 end
-display(plot_centered_results())
+
+function plot_scaled_results()
+    p = plot()
+    RandomTrajectory.plot_trajectory(pos[:,1], pos[:,2], label = "Trajectory", start_end_labels = false, color=:blue)
+    
+    scaled_bump_location_x = bump_location_x .* 0.55
+    # scaled_bump_location_x = bump_location_x
+    scaled_bump_location_y = bump_location_y .* 0.55
+    # scaled_bump_location_y = bump_location_y 
+    
+
+    RandomTrajectory.plot_trajectory(scaled_bump_location_x, scaled_bump_location_y, label = "Integrated", start_end_labels = false, color=:black, alpha=0.15)
+    smoothed_bump_location_x = Utils.smooth(scaled_bump_location_x, 5)
+    smoothed_bump_location_y = Utils.smooth(scaled_bump_location_y, 5)
+    RandomTrajectory.plot_trajectory(smoothed_bump_location_x, smoothed_bump_location_y, label = "Smoothed", start_end_labels = true, color=:orange)
+    savefig("data/Q35_volatile_results_scaled.svg")
+    return p
+end
+display(plot_scaled_results())
 
 
-
-function plot_x_y_ranges():
-    angles, pos = RandomTrajectory.random_trajectory(Q3.speed, sp.T, sp.delta_t, Q3.volatility)
