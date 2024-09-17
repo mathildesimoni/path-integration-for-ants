@@ -6,4 +6,4 @@ It consists of modelling the path integration mechanism in ants using bump attra
 
 Here is a [link to the report](./report_code/report.pdf).
 
-![](./data/Q37_longer.svg)
+![](./report_code/integrated_path_example.svg)
